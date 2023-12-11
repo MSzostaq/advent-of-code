@@ -61,7 +61,33 @@ const partOne = (input: string) => {
   return getPath(map).size / 2;
 };
 
+const partTwo = (input: string) => {
+  const lines = input.split("\n");
+  const map = parseInput(lines);
+  const path = getPath(map);
+  let inner = 0;
+  let inside = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    for (let j = 0; j < lines[i].length; j++) {
+      const node = map[`${i},${j}`];
+      if (path.has(node)) {
+        if (
+          (node.val === "S" && ["|", "L", "J"].includes(lines[i + 1][j])) ||
+          ["|", "F", "7"].includes(lines[i][j])
+        )
+          inside = !inside;
+      } else if (inside) {
+        inner++;
+      }
+    }
+  }
+
+  return inner;
+};
+
 console.log(partOne(inputData));
+console.log(partTwo(inputData));
 
 type Node = { val: string; left?: Node; right?: Node };
 type Map = Record<string, Node>;
