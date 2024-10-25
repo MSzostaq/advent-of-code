@@ -1,6 +1,14 @@
 import fs from "fs";
 import path from "path";
 
+type Dirs = {
+  R: number[];
+  D: number[];
+  L: number[];
+  U: number[];
+  [key: string]: number[];
+};
+
 const filePath = path.resolve(__dirname, "input.txt");
 const inputData = fs.readFileSync(filePath, "utf-8").split("\n");
 
@@ -42,11 +50,3 @@ const partTwo = () => solve(true);
 
 console.log(partOne());
 console.log(partTwo());
-
-type Dirs = {
-  R: number[];
-  D: number[];
-  L: number[];
-  U: number[];
-  [key: string]: number[];
-};

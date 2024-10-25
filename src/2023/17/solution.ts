@@ -1,6 +1,14 @@
 import fs from "fs";
 import path from "path";
 
+type QueueItem = {
+  x: number;
+  y: number;
+  dir: number;
+  dirDist: number;
+  prev: [number, number, number, number] | null;
+};
+
 const filePath = path.resolve(__dirname, "input.txt");
 const inputData: number[][] = fs
   .readFileSync(filePath, "utf-8")
@@ -175,11 +183,3 @@ const partOneAndTwo = (input: number[][]): string => {
 };
 
 console.log(partOneAndTwo(inputData));
-
-type QueueItem = {
-  x: number;
-  y: number;
-  dir: number;
-  dirDist: number;
-  prev: [number, number, number, number] | null;
-};

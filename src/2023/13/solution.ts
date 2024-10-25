@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 
+type Grid = string[][];
+
 const filePath = path.resolve(__dirname, "input.txt");
 const inputData = fs.readFileSync(filePath, "utf-8");
 
@@ -50,5 +52,3 @@ const partTwo = (input: string): number => process(parseInput(input), 1);
 
 console.log(partOne(inputData));
 console.log(partTwo(inputData));
-
-type Grid = string[][];

@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 
+type Beam = { x: number; y: number; dir: string };
+
 const filePath = path.resolve(__dirname, "input.txt");
 const inputData = fs.readFileSync(filePath, "utf-8");
 
@@ -84,5 +86,3 @@ const partTwo = (input: string) => {
 
 console.log(partOne(inputData));
 console.log(partTwo(inputData));
-
-type Beam = { x: number; y: number; dir: string };

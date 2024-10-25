@@ -1,6 +1,11 @@
 import fs from "fs";
 import path from "path";
 
+type PointVector = {
+  p: number[];
+  v: number[];
+};
+
 const filePath = path.resolve(__dirname, "input.txt");
 const inputData = fs.readFileSync(filePath, "utf-8");
 
@@ -153,7 +158,9 @@ for (let vz = -500; vz <= 500; vz++) {
           }
 
           if (cnt >= 20 && parallelCount == 0) {
-            masterInt = [intXY[0], intXY[1], intYZ[1]];
+            if (Array.isArray(intYZ) && Array.isArray(intXY)) {
+              masterInt = [intXY[0], intXY[1], intYZ[1]];
+            }
           }
         }
         if (skip) break;
@@ -179,8 +186,3 @@ for (let vz = -500; vz <= 500; vz++) {
 
 console.log(partOne());
 console.log(partTwoHits);
-
-type PointVector = {
-  p: number[];
-  v: number[];
-};

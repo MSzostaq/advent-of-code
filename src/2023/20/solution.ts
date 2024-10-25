@@ -1,6 +1,18 @@
 import fs from "fs";
 import path from "path";
 
+type LogicItem = [string, "bc" | "&" | "%", string[]];
+
+type Broadcaster = { type: "bc"; dest: string[] };
+
+type FlipFlop = { type: "%"; state: boolean; dest: string[] };
+
+type Conjunction = {
+  type: "&";
+  state: Record<string, boolean>;
+  dest: string[];
+};
+
 const filePath = path.resolve(__dirname, "input.txt");
 const inputData = fs.readFileSync(filePath, "utf-8");
 
@@ -112,15 +124,3 @@ const partTwo = nd * pc * vd * tx;
 
 console.log(partOne);
 console.log(partTwo);
-
-type LogicItem = [string, "bc" | "&" | "%", string[]];
-
-type Broadcaster = { type: "bc"; dest: string[] };
-
-type FlipFlop = { type: "%"; state: boolean; dest: string[] };
-
-type Conjunction = {
-  type: "&";
-  state: Record<string, boolean>;
-  dest: string[];
-};

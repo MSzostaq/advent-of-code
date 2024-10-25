@@ -2,6 +2,23 @@ import fs from "fs";
 import path from "path";
 import { cloneDeep } from "lodash";
 
+type Part = {
+  x: number;
+  m: number;
+  a: number;
+  s: number;
+};
+
+type RuleSet = Map<string, string>;
+
+type Range = {
+  x: [number, number];
+  m: [number, number];
+  a: [number, number];
+  s: [number, number];
+  next: string;
+};
+
 const filePath = path.resolve(__dirname, "input.txt");
 const inputData = fs.readFileSync(filePath, "utf-8").replace(/\r/g, "");
 
@@ -197,20 +214,3 @@ const partTwo = (input: string): number => {
 
 console.log(partOne(inputData));
 console.log(partTwo(inputData));
-
-type Part = {
-  x: number;
-  m: number;
-  a: number;
-  s: number;
-};
-
-type RuleSet = Map<string, string>;
-
-type Range = {
-  x: [number, number];
-  m: [number, number];
-  a: [number, number];
-  s: [number, number];
-  next: string;
-};

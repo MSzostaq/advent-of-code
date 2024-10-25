@@ -1,6 +1,14 @@
 import fs from "fs";
 import path from "path";
 
+type Instruction = "R" | "L";
+
+type Node = { L: string; R: string };
+interface Problem {
+  instructions: Instruction[];
+  nodes: Record<string, Node>;
+}
+
 const filePath = path.resolve(__dirname, "input.txt");
 const inputData = fs.readFileSync(filePath, "utf-8");
 
@@ -58,10 +66,3 @@ const partTwo = (input: string) => {
 
 console.log(partOne(inputData));
 console.log(partTwo(inputData));
-
-type Instruction = "R" | "L";
-type Node = { L: string; R: string };
-interface Problem {
-  instructions: Instruction[];
-  nodes: Record<string, Node>;
-}

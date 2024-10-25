@@ -1,6 +1,21 @@
 import fs from "fs";
 import path from "path";
 
+type Position = [number, number];
+
+type Node = {
+  p: Position;
+  connections: { id: number; distance: number }[];
+};
+
+type StackItem = {
+  p: Position;
+  steps: number;
+  lastJuncId: number;
+  stepsToLastJunc: number;
+  seen?: { [key: string]: number };
+};
+
 const filePath = path.resolve(__dirname, "input.txt");
 const inputData = fs.readFileSync(filePath, "utf-8");
 
@@ -98,23 +113,34 @@ const getGraph = (): Node[] => {
 };
 
 const partOne = () => {
-  const getMoves = (cur) => {
-    let moves = [],
+  const getMoves = (
+    cur: { p: number[]; steps: number; seen: {} } | undefined
+  ) => {
+    if (!cur) return [];
+
+    type Position = [number, number];
+    let moves: Position[] = [],
       v = map[cur.p[1]][cur.p[0]];
 
-    if (D[v] !== undefined) moves.push(addVect(cur.p, DS[D[v]]));
-    else DS.forEach((d) => moves.push(addVect(cur.p, d)));
+    if (D[v] !== undefined) moves.push(addVect(cur.p as Position, DS[D[v]]));
+    else DS.forEach((d) => moves.push(addVect(cur.p as Position, d)));
 
-    return moves.filter((p) => validPos(p) && cur.seen[key(p)] === undefined);
+    return moves.filter(
+      (p) =>
+        validPos(p) && (cur.seen as Record<string, any>)[key(p)] === undefined
+    );
   };
 
-  let stack = [{ p: startPos.slice(), steps: 0, seen: {} }],
+  let stack = [
+      { p: startPos.slice(), steps: 0, seen: {} as Record<string, any> },
+    ],
     maxSteps = 0;
 
   while (stack.length) {
     let cur = stack.pop();
+    if (!cur) continue;
 
-    let k = key(cur.p);
+    let k = key(cur.p as [number, number]);
     cur.seen[k] = 1;
 
     let moves = getMoves(cur);
@@ -151,9 +177,10 @@ const partTwo = () => {
 
   while (stack.length) {
     let cur = stack.pop();
+    if (!cur) continue;
 
     let k = cur.p;
-    cur.seen[k] = 1;
+    (cur.seen as Record<number, number>)[k] = 1;
 
     if (cur.p == endNodeId) {
       maxSteps = Math.max(cur.steps, maxSteps);
@@ -161,7 +188,7 @@ const partTwo = () => {
     }
 
     nodes[k].connections
-      .filter((n) => cur.seen[n.id] === undefined)
+      .filter((n) => (cur.seen as Record<number, any>)[n.id] === undefined)
       .forEach((n) =>
         stack.push({
           p: n.id,
@@ -176,18 +203,3 @@ const partTwo = () => {
 
 console.log(partOne());
 console.log(partTwo());
-
-type Position = [number, number];
-
-type Node = {
-  p: Position;
-  connections: { id: number; distance: number }[];
-};
-
-type StackItem = {
-  p: Position;
-  steps: number;
-  lastJuncId: number;
-  stepsToLastJunc: number;
-  seen?: { [key: string]: number };
-};

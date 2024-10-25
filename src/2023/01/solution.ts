@@ -11,7 +11,12 @@ function partOne(input: string[]): number {
       .find((value) => !Number.isNaN(Number(value)));
     let lastValue = line
       .split("")
-      .findLast((value) => !Number.isNaN(Number(value)));
+      .reverse()
+      .find((value) => !Number.isNaN(Number(value)));
+
+    if (firstValue === undefined || lastValue === undefined) {
+      throw new Error("Invalid input: No numeric values found.");
+    }
 
     return Number(firstValue + lastValue);
   });
