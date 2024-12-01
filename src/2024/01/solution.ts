@@ -20,4 +20,18 @@ function partOne(input: number[][]): number {
   );
 }
 
+function partTwo(input: number[][]): number {
+  const left = input.map((line) => line[0]);
+  const rightOccurrences = input.reduce(
+    (map, val) => map.set(val[1], (map.get(val[1]) || 0) + 1),
+    new Map()
+  );
+
+  return left.reduce(
+    (sum, value) => sum + Number(value) * (rightOccurrences.get(value) || 0),
+    0
+  );
+}
+
 console.log(partOne(inputData));
+console.log(partTwo(inputData));
