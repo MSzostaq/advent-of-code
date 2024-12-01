@@ -1,0 +1,23 @@
+import fs from "fs";
+import path from "path";
+
+const filePath = path.resolve(__dirname, "input.txt");
+const inputData = fs
+  .readFileSync(filePath, "utf-8")
+  .trim()
+  .split("\n")
+  .map((line) => line.split("   ").map(Number));
+
+function partOne(input: number[][]): number {
+  const [left, right] = [
+    input.map((line) => line[0]).sort((a, b) => a - b),
+    input.map((line) => line[1]).sort((a, b) => a - b),
+  ];
+
+  return left.reduce(
+    (sum, value, index) => sum + Math.abs(value - right[index]),
+    0
+  );
+}
+
+console.log(partOne(inputData));
