@@ -33,5 +33,5 @@ function partTwo(input: number[][]): number {
   );
 }
 
-console.log(partOne(inputData));
-console.log(partTwo(inputData));
+console.log("Part 1:", partOne(inputData));
+console.log("Part 2:", partTwo(inputData));
