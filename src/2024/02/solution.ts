@@ -18,8 +18,21 @@ function isReportSafe(report: number[]): boolean {
   );
 }
 
+function isSafeWithOneRemoval(report: number[]): boolean {
+  return report.some((_, i) =>
+    isReportSafe(report.slice(0, i).concat(report.slice(i + 1)))
+  );
+}
+
 function partOne(data: number[][]): number {
   return data.filter(isReportSafe).length;
 }
 
+function partTwo(data: number[][]): number {
+  return data.filter(
+    (report) => isReportSafe(report) || isSafeWithOneRemoval(report)
+  ).length;
+}
+
 console.log("Part 1:", partOne(inputData));
+console.log("Part 2:", partTwo(inputData));
