@@ -1,10 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-const filePath = path.resolve(
-  __dirname,
-  process.argv.includes("--test") ? "test.txt" : "input.txt"
-);
+const filePath = path.resolve(__dirname, "input.txt");
 const inputData = fs.readFileSync(filePath, "utf-8").trim();
 
 function partOne(input: string | string[]) {
