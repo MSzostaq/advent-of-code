@@ -7,10 +7,6 @@ const filePath = path.resolve(
 );
 const inputData = fs.readFileSync(filePath, "utf-8").trim();
 
-function parseInput(rawInput: string) {
-  return rawInput.split("\n");
-}
-
 function partOne(input: string | string[]) {
   const regex = /mul\((\d{1,3}),(\d{1,3})\)/g;
 
