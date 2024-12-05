@@ -45,6 +45,27 @@ function findMiddlePage(update: Update): number {
   return update[midIndex];
 }
 
+function fixUpdateOrder(update: Update, rules: Rule[]): Update {
+  const ruleMap = new Map<number, Set<number>>();
+
+  for (const { before, after } of rules) {
+    if (!ruleMap.has(after)) {
+      ruleMap.set(after, new Set());
+    }
+    ruleMap.get(after)!.add(before);
+  }
+
+  return update.slice().sort((a, b) => {
+    if (ruleMap.get(a)?.has(b)) {
+      return 1;
+    }
+    if (ruleMap.get(b)?.has(a)) {
+      return -1;
+    }
+    return 0;
+  });
+}
+
 function partOne(rules: Rule[], updates: Update[]): number {
   let totalMiddleSum = 0;
 
@@ -57,4 +78,18 @@ function partOne(rules: Rule[], updates: Update[]): number {
   return totalMiddleSum;
 }
 
+function partTwo(rules: Rule[], updates: Update[]): number {
+  let totalMiddleSum = 0;
+
+  for (const update of updates) {
+    if (!isUpdateValid(update, rules)) {
+      const fixedUpdate = fixUpdateOrder(update, rules);
+      totalMiddleSum += findMiddlePage(fixedUpdate);
+    }
+  }
+
+  return totalMiddleSum;
+}
+
 console.log("Part 1:", partOne(rules, updates));
+console.log("Part 2:", partTwo(rules, updates));
