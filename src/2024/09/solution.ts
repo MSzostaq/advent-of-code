@@ -48,4 +48,49 @@ function partOne(input: string): number {
   return calculateResult(map);
 }
 
+function partTwo(input: string): number {
+  const parsedInput = parseInput(input);
+  const map: (number | null)[][] = [];
+  let id = 0;
+
+  parsedInput.forEach((value, i) => {
+    const row: (number | null)[] = [];
+    for (let j = 0; j < value; j++) {
+      row.push(i % 2 === 0 ? id : null);
+    }
+    if (i % 2 === 0) id++;
+    map.push(row);
+  });
+
+  const newMap: (number | null)[] = map.flat();
+
+  for (let i = map.length - 1; i >= 0; i--) {
+    if (map[i].every((x) => x == null)) continue;
+
+    const mapIndex = newMap.indexOf(map[i][0]);
+    const firstNull = newMap.findIndex(
+      (x, j) =>
+        x == null &&
+        j < mapIndex &&
+        newMap.slice(j, j + map[i].length).every((x) => x == null)
+    );
+    if (firstNull == -1) continue;
+    if (
+      !newMap
+        .slice(firstNull, firstNull + map[i].length)
+        .every((x) => x == null)
+    )
+      continue;
+
+    newMap.splice(firstNull, map[i].length, ...map[i]);
+    newMap.splice(mapIndex, map[i].length, ...Array(map[i].length).fill(null));
+  }
+
+  return newMap.reduce(
+    (a, x, i) => (a ?? 0) + (x == null ? 0 : i * (x as number)),
+    0
+  ) as number;
+}
+
 console.log("Part 1:", partOne(inputData));
+console.log("Part 2:", partTwo(inputData));
