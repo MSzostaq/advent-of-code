@@ -68,4 +68,21 @@ function partOne(input: string) {
   return sum;
 }
 
+function partTwo(input: string) {
+  const grid = input
+    .split("\n")
+    .map((line) => line.split("").map((num) => parseInt(num)));
+  const width = grid[0].length,
+    height = grid.length;
+
+  let sum = 0;
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (grid[y][x] === 0) sum += findTrails(grid, { x, y }, false);
+    }
+  }
+  return sum;
+}
+
 console.log("Part 1:", partOne(inputData));
+console.log("Part 2:", partTwo(inputData));
