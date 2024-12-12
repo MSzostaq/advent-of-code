@@ -83,4 +83,69 @@ function partOne(input: string) {
   return sum;
 }
 
+function partTwo(input: string) {
+  const grid = input.trim().split("\n");
+  const width = grid[0].length,
+    height = grid.length;
+
+  const filterPerimeters = (
+    array: Perimeter[],
+    primary: "x" | "y",
+    secondary: "x" | "y"
+  ) => {
+    array.sort((a, b) => a[primary] - b[primary]);
+
+    for (let i = 0; i < array.length; i++) {
+      let check = array[i][primary];
+      while (true) {
+        check++;
+        const nextNode = array.find(
+          (node) =>
+            node[primary] === check && node[secondary] === array[i][secondary]
+        );
+
+        if (nextNode !== undefined) nextNode.valid = false;
+        else break;
+      }
+    }
+  };
+
+  let alreadyFlooded = new Set<string>();
+  let sum = 0;
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (!alreadyFlooded.has(`${x},${y}`)) {
+        let details: {
+          area: number;
+          perimeter: { [key: string]: Perimeter[] };
+        } = {
+          area: 0,
+          perimeter: { [UP]: [], [DOWN]: [], [LEFT]: [], [RIGHT]: [] },
+        };
+        let visited = new Set<string>();
+        floodFill(grid, details, x, y, visited);
+        alreadyFlooded = alreadyFlooded.union(visited);
+
+        Object.keys(details.perimeter).forEach((direction) => {
+          if (direction === UP || direction === DOWN)
+            filterPerimeters(details.perimeter[direction], "x", "y");
+          if (direction === LEFT || direction === RIGHT)
+            filterPerimeters(details.perimeter[direction], "y", "x");
+        });
+
+        sum +=
+          details.area *
+          Object.values(details.perimeter).reduce(
+            (sum, array) =>
+              sum + array.filter((perimeter) => perimeter.valid).length,
+            0
+          );
+      }
+    }
+  }
+
+  return sum;
+}
+
 console.log("Part 1:", partOne(inputData));
+console.log("Part 2:", partTwo(inputData));
