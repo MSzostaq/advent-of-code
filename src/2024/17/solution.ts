@@ -1,6 +1,9 @@
 import fs from "fs";
 import path from "path";
 
+const filePath = path.resolve(__dirname, "input.txt");
+const inputData = fs.readFileSync(filePath, "utf-8");
+
 interface Computer {
   registers: {
     A: number;
@@ -10,9 +13,6 @@ interface Computer {
   instructionPointer: number;
   output: number[];
 }
-
-const filePath = path.resolve(__dirname, "input.txt");
-const inputData = fs.readFileSync(filePath, "utf-8");
 
 function parseInput(input: string): {
   registers: Computer["registers"];
