@@ -55,4 +55,17 @@ function partOne(input: string) {
   return bfs(walls, { x: 0, y: 0 }, { x: WIDTH, y: HEIGHT });
 }
 
+function partTwo(input: string) {
+  const walls = input.split("\n");
+  const currentWalls = new Set<string>();
+
+  for (let i = 0; i < walls.length; i++) {
+    currentWalls.add(walls[i]);
+
+    if (bfs(currentWalls, { x: 0, y: 0 }, { x: WIDTH, y: HEIGHT }) === -1)
+      return walls[i];
+  }
+}
+
 console.log("Part 1:", partOne(inputData));
+console.log("Part 2:", partTwo(inputData));
