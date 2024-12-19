@@ -4,47 +4,49 @@ import path from "path";
 const filePath = path.resolve(__dirname, "input.txt");
 const inputData = fs.readFileSync(filePath, "utf-8");
 
-function isPossible(
+function countWays(
   design: string,
-  memo: { [key: string]: number },
+  memo: Map<string, number>,
   possible: string[]
 ): number {
-  if (memo[design] !== undefined) return memo[design];
-  if (design.length === 0) return 0;
+  if (memo.has(design)) return memo.get(design)!;
 
-  let count = 0;
-  for (let i = 0; i < possible.length; i++) {
-    if (design.startsWith(possible[i])) {
-      const newDesign = design.slice(possible[i].length);
-      count += isPossible(newDesign, memo, possible);
+  if (design.length === 0) return 1;
+
+  let totalWays = 0;
+
+  for (const pattern of possible) {
+    if (design.startsWith(pattern)) {
+      const remaining = design.slice(pattern.length);
+      totalWays += countWays(remaining, memo, possible);
     }
   }
 
-  memo[design] = count;
-  return count;
+  memo.set(design, totalWays);
+  return totalWays;
 }
 
-function partOne(input: string) {
-  const parts = input.trim().split("\n\n");
-  const possible = parts[0].replace(/\s/g, "").split(",");
-  const designs = parts[1].split("\n");
+function partOne(input: string): number {
+  const [patternsRaw, designsRaw] = input.trim().split("\n\n");
+  const patterns = patternsRaw.replace(/\s/g, "").split(",");
+  const designs = designsRaw.split("\n");
 
-  const memo: { [key: string]: number } = {};
+  return designs.reduce((sum, design) => {
+    const memo = new Map<string, number>();
+    return sum + (countWays(design, memo, patterns) > 0 ? 1 : 0);
+  }, 0);
+}
 
-  const maxLength = possible.sort((a, b) => b.length - a.length)[0].length;
-  for (let len = 1; len < maxLength; len++) {
-    const current = possible.filter((design) => design.length === len);
-    if (len === 1) current.forEach((design) => (memo[design] = 1));
-    else
-      current.forEach(
-        (design) => (memo[design] = isPossible(design, memo, possible) + 1)
-      );
-  }
+function partTwo(input: string): number {
+  const [patternsRaw, designsRaw] = input.trim().split("\n\n");
+  const patterns = patternsRaw.replace(/\s/g, "").split(",");
+  const designs = designsRaw.split("\n");
 
-  return designs.reduce(
-    (sum, design) => sum + (isPossible(design, memo, possible) > 0 ? 1 : 0),
-    0
-  );
+  return designs.reduce((sum, design) => {
+    const memo = new Map<string, number>();
+    return sum + countWays(design, memo, patterns);
+  }, 0);
 }
 
 console.log("Part 1:", partOne(inputData));
+console.log("Part 2:", partTwo(inputData));
