@@ -91,4 +91,46 @@ function partOne(input: string) {
   return cheats;
 }
 
+function partTwo(input: string) {
+  const grid = input
+    .trim()
+    .split("\n")
+    .map((line) => line.split(""));
+  const width = grid[0].length,
+    height = grid.length;
+
+  let ending: Point = { x: 0, y: 0 };
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (grid[y][x] === "E") {
+        ending = { x, y };
+        grid[y][x] = ".";
+      }
+    }
+  }
+
+  const distances = bfs(grid, ending);
+
+  let cheats = 0;
+  const walkable = Object.keys(distances);
+  for (let i = 0; i < walkable.length; i++) {
+    for (let j = 0; j < walkable.length; j++) {
+      if (i === j) continue;
+
+      const start = walkable[i].split(",").map((num) => parseInt(num));
+      const end = walkable[j].split(",").map((num) => parseInt(num));
+
+      const dist = Math.abs(start[0] - end[0]) + Math.abs(start[1] - end[1]);
+
+      if (
+        dist <= 20 &&
+        distances[walkable[i]] - distances[walkable[j]] - dist >= 100
+      )
+        cheats++;
+    }
+  }
+  return cheats;
+}
+
 console.log("Part 1:", partOne(inputData));
+console.log("Part 2:", partTwo(inputData));
