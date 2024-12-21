@@ -122,4 +122,20 @@ function partOne(input: string) {
   }, 0);
 }
 
+function partTwo(input: string) {
+  const keycodes = input.trim().split("\n");
+  const memo: { [key: string]: number } = {};
+
+  return keycodes.reduce((sum, code) => {
+    const numerical = parseInt(
+      code
+        .split("")
+        .filter((character) => character.match(/\d/))
+        .join("")
+    );
+    return sum + numerical * getKeyPresses(KEYPAD, code, 25, memo);
+  }, 0);
+}
+
 console.log("Part 1:", partOne(inputData));
+console.log("Part 2:", partTwo(inputData));
