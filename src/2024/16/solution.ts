@@ -181,4 +181,29 @@ function partOne(input: string) {
   return distances[`${end.x},${end.y}`];
 }
 
+function partTwo(input: string) {
+  const grid = input.split("\n");
+  const { start, end, forward, reverse } = parseGrid(grid);
+
+  const fromStart = dijkstra(forward, start, false);
+  const toEnd = dijkstra(reverse, end, true);
+
+  const endKey = `${end.x},${end.y}`;
+  const target = fromStart[endKey];
+  const spaces = new Set<string>();
+
+  Object.keys(fromStart).forEach((position) => {
+    if (
+      position !== endKey &&
+      fromStart[position] + toEnd[position] === target
+    ) {
+      const [x, y] = position.split(",");
+      spaces.add(`${x},${y}`);
+    }
+  });
+
+  return spaces.size;
+}
+
 console.log("Part 1:", partOne(inputData));
+console.log("Part 2:", partTwo(inputData));
