@@ -28,6 +28,26 @@ const findSet = (
   return allSets;
 };
 
+function combination(array: string[], k: number) {
+  let result: string[][] = [];
+
+  const helper = (
+    _array: string[],
+    _k: number,
+    _i: number,
+    _current: string[]
+  ) => {
+    if (_current.length == k) result.push(_current);
+    if (_current.length == k || _i == _array.length) return;
+
+    helper(_array, _k, _i + 1, [_array[_i], ..._current]);
+    helper(_array, _k, _i + 1, [..._current]);
+  };
+
+  helper(array, k, 0, []);
+  return result;
+}
+
 function partOne(input: string) {
   const graph = input
     .trim()
@@ -56,4 +76,39 @@ function partOne(input: string) {
   }, 0);
 }
 
+function partTwo(input: string) {
+  const graph = input
+    .trim()
+    .split("\n")
+    .reduce<{ [key: string]: string[] }>((obj, line) => {
+      const [left, right] = line.split("-");
+      if (obj[left] === undefined) obj[left] = [];
+      if (obj[right] === undefined) obj[right] = [];
+
+      obj[left].push(right);
+      obj[right].push(left);
+      return obj;
+    }, {});
+
+  const MAX_LENGTH = Math.max(
+    ...Object.values(graph).map((array) => array.length)
+  );
+
+  let biggest: string[] = [];
+  Object.keys(graph).forEach((node) => {
+    const possible = combination(graph[node].sort(), MAX_LENGTH - 1);
+    for (let i = 0; i < possible.length; i++) {
+      let common = new Set([node, ...graph[node]].sort());
+      for (let j = 0; j < possible[i].length; j++)
+        common = common.intersection(
+          new Set([possible[i][j], ...graph[possible[i][j]]].sort())
+        );
+      if (common.size === MAX_LENGTH) biggest = Array.from(common);
+    }
+  });
+
+  return biggest;
+}
+
 console.log("Part 1:", partOne(inputData));
+console.log("Part 2:", partTwo(inputData));
