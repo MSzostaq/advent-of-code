@@ -31,4 +31,41 @@ function partOne(input: number[][]): number {
   return totalJoltage;
 }
 
+function getMaxJoltagePartTwo(bank: number[]): bigint {
+  const targetDigits = 12;
+  const selected: number[] = [];
+  let remaining = [...bank];
+
+  for (let pos = 0; pos < targetDigits; pos++) {
+    const digitsLeft = targetDigits - pos;
+    const minIndexNeeded = remaining.length - digitsLeft;
+
+    let maxDigit = -1;
+    let maxIdx = -1;
+
+    for (let i = 0; i <= minIndexNeeded; i++) {
+      if (remaining[i] > maxDigit) {
+        maxDigit = remaining[i];
+        maxIdx = i;
+      }
+    }
+
+    selected.push(maxDigit);
+    remaining = remaining.slice(maxIdx + 1);
+  }
+
+  return BigInt(selected.join(""));
+}
+
+function partTwo(input: number[][]): bigint {
+  let totalJoltage = 0n;
+
+  for (const bank of input) {
+    totalJoltage += getMaxJoltagePartTwo(bank);
+  }
+
+  return totalJoltage;
+}
+
 console.log("Part 1:", partOne(inputData));
+console.log("Part 2:", partTwo(inputData));
