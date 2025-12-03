@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 
 const filePath = path.resolve(__dirname, "input.txt");
-
 const inputData = fs
   .readFileSync(filePath, "utf-8")
   .trim()
