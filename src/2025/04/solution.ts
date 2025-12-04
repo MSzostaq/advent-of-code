@@ -110,5 +110,4 @@ function partTwo(grid: string[]): number {
 }
 
 console.log("Part 1:", partOne(inputData));
-
 console.log("Part 2:", partTwo(inputData));
