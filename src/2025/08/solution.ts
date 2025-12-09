@@ -88,4 +88,48 @@ function partOne(coords: Coord[]): number {
   return sizes[0] * sizes[1] * sizes[2];
 }
 
+function partTwo(coords: Coord[]): number {
+  const edges: Array<{ dist: number; a: number; b: number }> = [];
+
+  for (let i = 0; i < coords.length; i++) {
+    for (let j = i + 1; j < coords.length; j++) {
+      edges.push({
+        dist: distance(coords[i], coords[j]),
+        a: i,
+        b: j,
+      });
+    }
+  }
+
+  edges.sort((a, b) => a.dist - b.dist);
+
+  const uf = new UnionFind(coords.length);
+  let lastConnectedEdge: { a: number; b: number } | null = null;
+
+  for (const edge of edges) {
+    const rootA = uf.find(edge.a);
+    const rootB = uf.find(edge.b);
+
+    if (rootA !== rootB) {
+      uf.union(edge.a, edge.b);
+      lastConnectedEdge = edge;
+
+      const componentSizes = uf.getComponentSizes();
+      if (componentSizes.length === 1) {
+        break;
+      }
+    }
+  }
+
+  if (!lastConnectedEdge) {
+    throw new Error("No connections were made");
+  }
+
+  const xCoordA = coords[lastConnectedEdge.a][0];
+  const xCoordB = coords[lastConnectedEdge.b][0];
+
+  return xCoordA * xCoordB;
+}
+
 console.log("Part 1:", partOne(parseCoordinates(inputData)));
+console.log("Part 2:", partTwo(parseCoordinates(inputData)));
