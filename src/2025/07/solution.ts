@@ -59,8 +59,60 @@ function simulateBeams(lines: string[]): number {
   return splitCount;
 }
 
+function simulateQuantumBeams(lines: string[]): number {
+  const startCol = findStartPosition(lines);
+  const rows = lines.length;
+  const cols = lines[0].length;
+
+  const memo = new Map<string, number>();
+
+  function countExitPoints(
+    row: number,
+    col: number,
+    visited: Set<string>
+  ): number {
+    if (row >= rows || col < 0 || col >= cols) {
+      return 1;
+    }
+
+    const key = `${row},${col}`;
+
+    if (visited.has(key)) {
+      return 0;
+    }
+
+    if (memo.has(key)) {
+      return memo.get(key)!;
+    }
+
+    const newVisited = new Set(visited);
+    newVisited.add(key);
+
+    const cell = lines[row][col];
+    let result = 0;
+
+    if (cell === "^") {
+      result =
+        countExitPoints(row + 1, col - 1, newVisited) +
+        countExitPoints(row + 1, col + 1, newVisited);
+    } else {
+      result = countExitPoints(row + 1, col, newVisited);
+    }
+
+    memo.set(key, result);
+    return result;
+  }
+
+  return countExitPoints(1, startCol, new Set());
+}
+
 function partOne(lines: string[]): number {
   return simulateBeams(lines.filter((line) => line.length > 0));
 }
 
+function partTwo(lines: string[]): number {
+  return simulateQuantumBeams(lines.filter((line) => line.length > 0));
+}
+
 console.log("Part 1:", partOne(inputData));
+console.log("Part 2:", partTwo(inputData));
