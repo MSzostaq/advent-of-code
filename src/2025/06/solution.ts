@@ -64,6 +64,58 @@ function solveProblem(numbers: number[], operation: string): number {
     : numbers.reduce((a, b) => a * b, 1);
 }
 
+function parseProblemsPartTwo(
+  lines: string[]
+): Array<{ numbers: number[]; operation: string }> {
+  const problems: Array<{ numbers: number[]; operation: string }> = [];
+  const maxLength = Math.max(...lines.map((l) => l.length));
+  const paddedLines = lines.map((l) => l.padEnd(maxLength, " "));
+
+  let operation = "";
+  let currentProblem: number[] = [];
+
+  for (let col = maxLength - 1; col >= 0; col--) {
+    const isEmptyColumn = paddedLines.every((l) => l[col] === " ");
+
+    if (isEmptyColumn) {
+      if (currentProblem.length > 0 || operation) {
+        if (operation && currentProblem.length > 0) {
+          problems.push({
+            numbers: currentProblem.reverse(),
+            operation,
+          });
+          currentProblem = [];
+          operation = "";
+        }
+      }
+    } else {
+      let numStr = "";
+      for (let row = 0; row < paddedLines.length - 1; row++) {
+        const char = paddedLines[row][col];
+        if (char && char !== " ") numStr += char;
+      }
+
+      const opChar = paddedLines[paddedLines.length - 1][col];
+      if (opChar && (opChar === "+" || opChar === "*")) {
+        operation = opChar;
+      }
+
+      if (numStr) {
+        currentProblem.push(Number(numStr));
+      }
+    }
+  }
+
+  if (currentProblem.length > 0 && operation) {
+    problems.push({
+      numbers: currentProblem.reverse(),
+      operation,
+    });
+  }
+
+  return problems;
+}
+
 function partOne(lines: string[]): number {
   const problems = parseProblems(lines);
   let grandTotal = 0;
@@ -76,4 +128,17 @@ function partOne(lines: string[]): number {
   return grandTotal;
 }
 
+function partTwo(lines: string[]): number {
+  const problems = parseProblemsPartTwo(lines);
+  let grandTotal = 0;
+
+  for (const problem of problems) {
+    const answer = solveProblem(problem.numbers, problem.operation);
+    grandTotal += answer;
+  }
+
+  return grandTotal;
+}
+
 console.log("Part 1:", partOne(inputData));
+console.log("Part 2:", partTwo(inputData));
